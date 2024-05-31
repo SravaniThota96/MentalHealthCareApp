@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="299802479018-sgto31d6na5v4ft61m0nnhn2ctdvqv2r.apps.googleusercontent.com">
+    <title>Mental Healthcare Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://apis.google.com/js/platform.js"></script>
+</head>
+<body>
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+        function getCookie(name) {
+            return document.cookie.split('; ').find(row => row.startsWith(name+'='))?.split('=')[1]
+        }
+
+        function isUserAuthenticated() {
+            return getCookie('is_auth') === 'true'
+        }
+
+        function getLoggedInUserEmail() {
+            if (isUserAuthenticated()) {
+                return getCookie('loggedin_user_email');
+            } else {
+                return ""
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            console.log(getLoggedInUserEmail())
+            console.log(getCookie('picture'))
+            document.getElementById('user-profile-picture').src = getCookie('loggedin_user_picture');
+            console.log(getCookie('loggedin_user_picture'))
+            if (isUserAuthenticated()) {
+                // If the user is authenticated, show the sign-out button and hide the sign-in container
+                document.getElementById('signin-container').style.display = 'none';
+                document.getElementById('signout-button').style.display = 'block';
+            } else {
+                // Ensure the sign-in button is shown if not authenticated
+                document.getElementById('signin-container').style.display = 'block';
+                document.getElementById('signout-button').style.display = 'none';
+            }
+
+        });
+    </script>
+    <div id="g_id_onload"
+        data-client_id="299802479018-sgto31d6na5v4ft61m0nnhn2ctdvqv2r.apps.googleusercontent.com"
+        data-login_uri="http://localhost:80/auth/google"
+        data-auto_prompt="false">
+    </div>
+    <div class="auth-buttons-container">
+        <div id="signin-container" class="auth-container">
+            <div class="g_id_signin"
+                data-type="standard"
+                data-size="large"
+                data-theme="outline"
+                data-text="continue_with"
+                data-shape="rectangular"
+                data-logo_alignment="left">
+            </div>
+        </div>
+        
+        <button id="signout-button" class="auth-container" style="background-color: #f5f5f5; border: 1px solid #ccc; border-radius: 5px; padding: 5px 10px; display: flex; align-items: center; cursor: pointer;">
+            <img id="user-profile-picture" src="" alt="User" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 5px;">
+            Sign Out
+        </button>
+    </div>
+
+    <div class="container">
+        <h1>CareTalk AI</h1>
+        <h2>Your AI Mental Healthcare Assistant!</h2>
+        <div class="button-container">
+            <a href="#" id="open-chat" class="button">Text Message</a>
+            <br><br><br>
+            <!-- Updated to use JavaScript for opening the voice chat modal -->
+            <a href="#" id="view-past-chats" class="button">View Past Chats</a>
+            <br><br><br>
+            <a href="#" id="open-voice-chat" class="button">Voice Message</a>
+        </div>
+    </div>
+
+    <!-- Text Chat Modal -->
+    <div id="chat-modal" class="modal" style="display:none;">
+        <div id="chat-container">
+            <div id="chat-header">
+                <span>Text chat with Mental Healthcare Assistant</span>
+                <button id="close-chat">X</button>
+            </div>
+            <div id="chat-box"></div>
+            <div class="feedback-buttons">
+                <!-- <button class="upvote">👍</button> -->
+                <button class="downvote" id="downvoteButton">👎</button>
+                <!-- Hidden input to store the last user message -->
+                <input type="hidden" id="lastUserMessage" value="">
+                <br><br>
+                <div id="chat-actions">
+                    <button id="download-chat">Download Chat Summary</button>
+                    <form id="emailForm">
+                        <input type="email" id="email-input" name="email" placeholder="Enter your email" />
+                        <button id="email-chat" type="submit">Email Chat Summary</button>
+                        <button id="email-transcript" type="button">Email Transcript</button>
+                    </form>
+                </div>
+            </div>
+            <div id="chat-input">
+                <input type="text" id="user-input" placeholder="Type your message here...">
+                <button id="send-btn">Send</button>
+            </div>                        
+        </div>
+    </div>
+
+    <!-- Chat History Modal -->
+    <div id="chat-history-modal" class="modal" style="display:none;">
+        <div id="chat-history-container">
+            <div id="chat-history-header">
+                <span>Chat History</span>
+                <button id="close-chat-history">X</button>
+            </div>
+            <div id="chat-history-content">
+                <div id="chat-list" class="chat-sidebar">
+                    <!-- Chat titles will be populated here -->
+                </div>
+                <div id="chat-conversation" class="chat-main">
+                    <!-- Chat conversation will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Voice Chat Modal -->
+    <div id="voice-chat-modal" class="modal" style="display:none;">
+        <div id="voice-chat-container">
+            <div id="voice-chat-header">
+                <span>Voice chat with Mental Healthcare Assistant</span>
+                <button id="close-voice-chat">X</button>
+            </div>
+            <div id="voice-controls">
+                <!-- <label for="voice-select">Choose AI Voice Gender:</label>
+                <select id="voice-gender-select">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select> -->
+                <button id="record-voice">Record Voice</button>
+            </div>
+            <div id="transcript">
+            <div id="voice-avatar-container">
+                <img id="voice-avatar" src='/static/man-avatar.png' alt="AI Avatar" />
+                <div id="mouth-overlay"></div>
+            </div>
+            <div class="feedback-buttons">
+                    <!-- <button class="upvote">👍</button>
+                    <button class="downvote">👎</button> -->
+            <br><br>
+            <div id="chat-actions">
+                <button id="download-voice-chat">Download Chat Summary</button>
+                <form id="emailFormVoice">
+                    <input type="email" id="voice-email-input" name="email" placeholder="Enter your email" />
+                    <button id="voice-email-chat" type="submit">Email Chat Conversation</button>
+                </form>
+            </div>                        
+            </div>
+            
+            </div>
+        </div>
+    </div>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>
+
+
+
+
