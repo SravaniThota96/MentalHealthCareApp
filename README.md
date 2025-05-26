@@ -21,3 +21,5 @@ ensuring that the responses are not only accurate but are also personalized and
 resonate on a human level. This approach addresses the global shortage of mental
 health professionals and provides a stigma-free way for individuals to seek help,
 promoting broader acceptance and understanding of mental health issues.
+
+Presentation: https://docs.google.com/presentation/d/1xWF8Bare336dabJP75JHQSUOmlH0bLQ7cueFY2yY8yc/edit?slide=id.g27173b607a2_0_51#slide=id.g27173b607a2_0_51
